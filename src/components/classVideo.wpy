@@ -1,0 +1,72 @@
+<style lang="less">
+    .classVideo{
+        width : 100% ;
+        .video-container{
+          width : 100% ;
+          height : 416rpx;
+          z-index:998;
+          video{
+            width : 100% ;
+            height : 416rpx;
+          }
+        }
+    }
+    .video-create-paper{
+        position:fixed;
+        z-index:999;
+        right:0rpx;
+        top:35rpx;
+        width:116rpx;
+        height:38rpx;
+        line-height:38rpx;
+        font-size:23rpx;
+        font-family:"PingFAngSC-Regular";
+        color:#231815;
+        text-align:center;
+        background-color:#ffcb00;
+        border:1px solid #dddddd;
+        border-radius : 9rpx;
+        
+    }
+</style>
+
+
+<template>
+  <!--index.wxml-->
+  <view class="classVideo">
+    <view class="video-container">
+      <video src="{{src}}" controls autoplay ></video>
+      <cover-view class="video-create-paper" bindtap="createPaper">生成海报</cover-view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+
+export default class classVideo extends wepy.component {
+  props = {
+      src : {
+         default : 'http://fs.xuexibao.cn/educhain/course/13/1.mp4'
+      }
+  }
+
+  methods = {
+    createPaper(){
+      wx.navigateTo({
+        url: '../pages/imgSave'
+      });
+    }
+  }
+
+
+  onLoad() {
+    let that = this;
+
+  }
+  watch = {
+   
+  }
+}
+
+</script>
+

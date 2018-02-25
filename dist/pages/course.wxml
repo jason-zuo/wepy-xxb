@@ -1,0 +1,155 @@
+
+      <view class="course">
+        
+  <!--index.wxml-->
+  <view class="classVideo" wx:if="{{type == 2}}">
+    <view class="video-container">
+      <video src="{{$classVIdeo$src}}" controls autoplay/>
+      <cover-view class="video-create-paper" bindtap="$classVIdeo$createPaper">生成海报</cover-view>
+    </view>
+  </view>
+
+        
+  <!--index.wxml-->
+  <view class="classAudio" wx:if="{{type == 1}}">
+    <view class="audio-container">
+      <image class="audio-cover" src="http://fs.91xuexibao.com/educhain/course/13/cover.png"/>
+      <!-- <audio src="{{src}}" autoplay bindplay="{{playHeadle}}" bindpause="{{pauseHandle}}" id="myaudio"></audio> -->
+      <text class="audio-create-paper" bindtap="$classAudio$createPaper">生成海报</text>
+    </view>
+
+    <view class="audio-controls">
+        <view class="audio-slider">
+            <text class="audioTime">{{$classAudio$currentTime}}</text>
+            <slider class="audio-slider-main" bindchange="$classAudio$sliderChange" bindchanging="$classAudio$sliderChange" block-size="12" max="{{$classAudio$sliderMax}}" value="{{$classAudio$sliderCurrent}}" backgroundColor="#444444" activeColor="#ffd944" block-color="#ffd944"/>
+            <text class="audioTime">{{$classAudio$duration}}</text>
+        </view>
+        <view class="audio-play-status">
+            <view class="left-audio">
+                <image src="../images/pre.png"/>
+            </view>
+            <view class="play-audio" bindtap="$classAudio$playaudio">
+                 <image src="{{$classAudio$playImg}}"/>
+            </view>
+            <view class="right-audio">
+                 <image src="../images/next.png"/>
+            </view>
+        </view>
+    </view>
+  </view>
+
+        <view class="course-group">
+            <view class="group-icon">
+                <image src="../images/wechat.png"> </image>
+            </view>
+            <view class="group-title">
+                <text class="title-top">官方学习群</text>
+                <text class="title-bottom">加入官方学习群， 每天都有好课程</text>
+            </view>
+            <button open-type="contact" class="join">加入</button>
+        </view>
+
+        <!-- 课程列表解锁部分 -->
+        
+        <view class="lockList">
+                <view class="list-top">
+                    <text class="list-top-title">
+                        课程列表 （ 已解锁 {{$lockList$listData.amount}} 节课 ）
+                    </text>
+                    <view class="list-top-join">
+                        <text bindtap="$lockList$moreClass">更多</text>   
+                        <image src="../images/right-open.png"/>
+                    </view>
+                </view>
+
+
+                <view class="list-lock">
+                     <view class="classList-main">
+                        <view class="main-item">
+                            <view class="item-left">
+                                <image src="../images/audio.png" class="item-img"/>
+                                <text class="item-left-name">{{"六天速成 - 北大学霸考试技巧讲解"}}</text>
+                            </view>
+                            <text class="lock-status lock-no">
+                                未解锁
+                            </text>
+                            
+                        </view>
+                    </view>
+                </view>
+
+                <view class="lock-style">
+                     <view class="cuImg-style-inner">
+                        <image src="{{$lockList$headImg}}"/>
+                    </view>
+                    
+        <view class="cuImg">
+                <view class="cuImg-style">
+                    <view class="cuImg-style-inner"  wx:if="{{$lockList$cuImg$cuImgStyle == 1}}">
+                        <image src="{{$lockList$cuImg$imgsrc}}"/>
+                    </view>
+                    <view class="cuImg-style-inner cuImg-style-noenter"  wx:if="{{$lockList$cuImg$cuImgStyle == 2}}">
+                        待加入
+                    </view>
+                </view>
+        </view>
+
+                    
+        <view class="cuImg">
+                <view class="cuImg-style">
+                    <view class="cuImg-style-inner"  wx:if="{{$lockList$cuImg$cuImgStyle == 1}}">
+                        <image src="{{$lockList$cuImg$imgsrc}}"/>
+                    </view>
+                    <view class="cuImg-style-inner cuImg-style-noenter"  wx:if="{{$lockList$cuImg$cuImgStyle == 2}}">
+                        待加入
+                    </view>
+                </view>
+        </view>
+
+                    
+        <view class="cuImg">
+                <view class="cuImg-style">
+                    <view class="cuImg-style-inner"  wx:if="{{$lockList$cuImg$cuImgStyle == 1}}">
+                        <image src="{{$lockList$cuImg$imgsrc}}"/>
+                    </view>
+                    <view class="cuImg-style-inner cuImg-style-noenter"  wx:if="{{$lockList$cuImg$cuImgStyle == 2}}">
+                        待加入
+                    </view>
+                </view>
+        </view>
+
+                    
+        <view class="cuImg">
+                <view class="cuImg-style">
+                    <view class="cuImg-style-inner"  wx:if="{{$lockList$cuImg$cuImgStyle == 1}}">
+                        <image src="{{$lockList$cuImg$imgsrc}}"/>
+                    </view>
+                    <view class="cuImg-style-inner cuImg-style-noenter"  wx:if="{{$lockList$cuImg$cuImgStyle == 2}}">
+                        待加入
+                    </view>
+                </view>
+        </view>
+
+                    <view class="lock-style-inner">
+                        <image src="../images/lock.png"/>
+                    </view>
+                    <view class="lock-style-inner">
+                        <button class="inner-add" open-type="share">
+                             <image src="../images/add.png"/>
+                        </button>
+                    </view>
+                </view>
+                <view class="bottom-info">每邀请 6 位好友一起听课， 可解锁 1 节课程</view>
+        </view>
+
+        
+    <block>
+       <view class="classdetail">
+           <view  wx:for="{{$classDetail$arrList}}" wx:key="item">
+               <image src="{{item}}" mode="widthFix"/>
+           </view>
+       </view>
+    </block>
+
+
+    </view>

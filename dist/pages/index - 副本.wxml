@@ -1,0 +1,56 @@
+
+  <view class="container">
+    <image class="class-picture" src="{{mockImg}}" mode="aspectFill"/>
+    <text class="class-ploy"/>
+    <view class="tab-box">
+      <!-- 课程列表以及介绍的tab切换 -->
+      
+  <!--index.wxml-->
+  <view class="swiper-tab">
+    <view  wx:for="{{$tab$tabList}}" wx:key="index" class="swiper-tab-list {{$tab$currentTab==index ? 'active' : ''}}" data-current="{{index}}" bindtap="$tab$swichNav">
+      {{item.name? item.name:item}}
+      <view class=" {{item.dotNum>=100?'dotbig':'dot'}}" wx:if="{{item.dotNum>0}}">{{item.dotNum}}</view>
+    </view>
+  </view>
+
+      <!-- 底部为切换之后具体的内容展示 -->
+      <scroll-view scroll-y="true" class="swiper-item-box">
+        <!--课程详情 -->
+        
+    <block wx:if="{{currentTab==0}}">
+       <view class="classdetail">
+           <view  wx:for="{{$ClassDetail$arrList}}" wx:key="item">
+               <image src="{{item}}" mode="widthFix"/>
+           </view>
+       </view>
+    </block>
+
+        <!-- 课程列表 -->
+        
+    <block wx:if="{{currentTab==1}}">
+        <view class="classList-content"  wx:if="alreadyBuy">
+            <text class="classList-title">每邀请 6 位好友一起听课， 可免费解锁 1 节课</text>
+        </view>
+       <view class="classList-main"  wx:for="{{$classList$singles}}" wx:for-index="idx" wx:for-item="item" wx:key="{{item}}">
+           <view class="main-item">
+               <view class="item-left">
+                   <image src="../images/audio.png" class="item-img"/>
+                   <text class="item-left-name">{{item.name}}</text>
+               </view>
+               <text class="lock-status lock-no">
+                   未解锁
+               </text>
+              
+           </view>
+       </view>
+    </block>
+
+      </scroll-view>
+    </view>
+    <view class="detail-bottom">
+      <view class="bottom-box">
+        <view class="sy-bottom btn_buy" bindtap="pay">购买专栏：{{1}}</view>
+        <view class="sy-bottom btn_invite" bindtap="invitePaper">邀请好友</view>
+      </view>
+    </view>
+  </view>

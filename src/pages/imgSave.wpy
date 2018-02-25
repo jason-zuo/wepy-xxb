@@ -1,0 +1,124 @@
+<style lang="less">
+    page {
+      height : 100% ;
+    }
+    .imgSave{
+      width : 100% ;
+      height : 100% ;
+     
+
+      .imgSave-top{
+        width : 100% ;
+        height: 100% ;
+         image{
+           width : 100% ;
+           height : 100% ;
+         }
+      }
+      .imgSave-placeholder{
+        width : 100% ;
+        height : 127rpx; 
+      }
+      .imgSave-bottom{
+          width : 100%;
+          height : 127rpx; 
+          position: fixed ;
+          bottom : 0;
+          padding: 20rpx 30rpx;
+          background-color : #fff;
+          color : #000 ;
+          font-size : 40rpx;
+          box-sizing: border-box ;
+          border-top: 1px solid #ddd;
+          .bottom-box{
+              height : 100% ;
+              width : 100% ;
+              display: table ;
+              background-color : #ffd845;
+              border-radius : 50px;
+              text-align:center;
+              .btn_invite{
+                display: table-cell;
+                vertical-align : middle ;
+              }
+          }
+      }
+    }
+</style>
+<template>
+  <view class="container">
+      <view class="imgSave">
+        <view class="imgSave-top">
+          <image src="http://fs.xuexibao.cn/920efa355fd7487298fb19c374680c16.jpg" ></image>
+        </view>
+        <view class="imgSave-placeholder">
+
+        </view>
+          <view class="imgSave-bottom">
+            <view class="bottom-box" @tap="saveCover">
+              <text class="sy-bottom btn_invite" >保存海报</text>
+            </view>
+          </view>
+      </view>
+      
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import Toast from 'wepy-com-toast'
+  import api from '../api/api.js';
+  import testMixin from '../mixins/test'
+
+  export default class imgSave extends wepy.page {
+    config = {
+      navigationBarTitleText: '生成海报',
+      navigationBarBackgroundColor: '#ffd845'
+    }
+    components = {
+	 
+    }
+
+    mixins = [testMixin]
+
+    data = {
+     
+    }
+
+    computed = {
+
+    }
+
+    methods = {
+      async saveCover () {
+        // 由于微信小程序不支持网络图片直接进行保存，所以先对图片进行处理先下载到本地,同时需要将需要下载的图片域名在公众号配置
+          let filePath = "http://fs.xuexibao.cn/920efa355fd7487298fb19c374680c16.jpg" ;
+          const json = await wx.downloadFile({url: filePath}) ;
+          wx.saveImageToPhotosAlbum({
+            filePath : json.data.tempFilePath,
+            success(res) {
+                wepy.showToast({
+                  title : "图片已保存" ,
+                  icon : "success"
+                })
+            },
+            fail (err) {
+               wepy.showToast({
+                  title : "图片未保存" ,
+                  icon : "fail"
+                })
+            }
+          })
+      }
+    }
+
+    events = {
+
+    }
+
+    onLoad() {
+
+    }
+  }
+
+</script>

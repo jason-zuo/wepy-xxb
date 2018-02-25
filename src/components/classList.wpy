@@ -1,0 +1,156 @@
+<style lang="less">
+    .classList-content{
+        width : 100% ;
+        color : #d6b432 ;
+        background-color : #fef197 ;
+        padding-left : 27rpx ;
+        line-height : 50rpx ;
+        font-size : 24rpx;
+        .classList-title{
+            
+        }
+    }
+    .classList-main{
+        width : 100% ;
+        height : 100% ;
+        position: relative;
+        .main-item{
+            display: flex ;
+            margin: 0 26rpx;
+            height : 100rpx;
+            font-size : 24rpx ;
+            border-bottom: 1px solid #ddcddd;
+            .item-left{
+                width : 80% ;
+                display: flex ;
+                align-items: center;
+                .item-left-name{
+                    font-size : 24rpx ;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    margin-left : 20rpx;
+                }
+
+                .item-img{
+                    width : 60rpx;
+                    height : 60rpx;
+                }
+            };
+            // 解锁状态样式
+            .lock-status{
+                font-size : 24rpx ;
+                color : #7b858f ;
+            };
+            .lock-no{
+                font-size:16rpx;
+                text-align:center;
+                width:46rpx;
+                height:26rpx;
+                line-height:27rpx;
+                margin-top:41rpx;
+                background:#7c8790;
+                color : #fffefe ;
+                border-radius:9rpx;
+            };
+        }
+        .main-item-nobuy{
+            position : relative;
+           
+        }
+         .main-item-filter{
+                width : 100%;
+                height : 100%;
+                position : absolute ;
+                top : 0;
+                background-color : rgba(250,250,250,0.6) ;
+        }
+    }
+</style>
+<template>
+    <block >
+        <view class="classList-content" wx:if="alreadyBuy">
+            <text class="classList-title">每邀请 6 位好友一起听课， 可免费解锁 1 节课</text>
+        </view>
+        <view class="classList-main" wx:for="{{singles}}" wx:for-index="idx" wx:for-item="item" wx:key="{{item}}" >
+            <navigator class="item_content" url="/pages/course?id={{item.id}}" wx:if="{{alreadyBuy == true}}">
+                <view class="main-item">
+                    <view class="item-left">
+                        <image src="../images/audio.png" class="item-img" wx:if="{{productType == 2}} "></image>
+                        <image src="../images/video.png" class="item-img" wx:if="{{productType == 3 }}"></image>
+                        <image src="../images/text.png" class="item-img" wx:if="{{productType == 1 }}"></image>
+                        <text class="item-left-name">{{item.name}}</text>
+                    </view>
+                    <!-- <text class="lock-status lock-no">试读</text> -->
+                </view>
+            </navigator>
+             <view class="main-item" wx:if="{{alreadyBuy == false}}">
+                    <view class="item-left">
+                        <image src="../images/audio.png" class="item-img" wx:if="{{productType == 2}} "></image>
+                        <image src="../images/video.png" class="item-img" wx:if="{{productType == 3}} "></image>
+                        <image src="../images/text.png" class="item-img" wx:if="{{productType == 1}} "></image>
+                        <text class="item-left-name">{{item.name}}</text>
+                    </view>
+                    <!-- <text class="lock-status lock-no">试读</text> -->
+            </view>
+        </view>
+    </block>
+</template>
+
+<script>
+    import wepy from 'wepy';
+//    import VolItem from 'volItem';
+    export default class classList extends wepy.component {
+        props = {
+            singles:{
+                 
+            } ,
+            alreadyBuy : {
+                default : false 
+            } ,
+            productType : {
+                
+            }
+        };
+
+        components = {
+//
+        };
+
+        data = {
+        };
+
+        methods = {
+             moreClass: function (id) {
+                wx.navigateTo({
+                    url: 'pages/course?courseId=' + id
+                });
+            }
+        };
+
+        iconStyle (type) {
+            switch (type) {
+                    case 2:
+                        return '../images/audio.png';
+                    case 3:
+                        return '../images/video.png';
+                    case 1:
+                        return '../images/text.png';
+                    default:
+                        return '../images/text.png';
+                }
+        }
+
+        onLoad () {
+            console.log(this.alreadyBuy)
+            console.log(this.singles)
+        };
+
+        onShow () {
+             console.log(this.alreadyBuy)
+            console.log(this.singles)
+        }
+
+
+    }
+</script>

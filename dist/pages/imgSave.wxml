@@ -1,0 +1,17 @@
+
+  <view class="container">
+      <view class="imgSave">
+        <view class="imgSave-top">
+          <image src="http://fs.xuexibao.cn/920efa355fd7487298fb19c374680c16.jpg"/>
+        </view>
+        <view class="imgSave-placeholder">
+
+        </view>
+          <view class="imgSave-bottom">
+            <view class="bottom-box" bindtap="saveCover">
+              <text class="sy-bottom btn_invite">保存海报</text>
+            </view>
+          </view>
+      </view>
+      
+  </view>

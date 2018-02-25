@@ -1,0 +1,317 @@
+<style lang="less">
+  .class-picture {
+    width: 100%;
+    height: 418rpx;
+  }
+
+  .class-ploy {
+    width: 100%;
+    height: 20rpx;
+    background-color: #f5f5f5;
+  }
+
+  .tab-box {
+    width: 100%
+  }
+.detail-bottom {
+  width: 100%;
+  border-top: 1px solid #ededed;
+  position: fixed;
+  bottom: 0;
+  background: #fff;
+  z-index: 1001;
+  .bottom-box {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative; 
+    }
+  }
+  .sy-bottom {
+    width: 100%;
+    text-align: center;
+    padding: 15rpx 40rpx;
+    height: 60rpx;
+    line-height: 60rpx;
+    font-size: 32rpx;
+    font-family:"PingFangSC-Regular";
+  }
+  .btn_buy {
+    background: #fff;
+    color: #231815;
+  }
+  .btn_invite {
+    color: #231815;
+    background: #ffd944;
+  }
+  .btn_real{
+    font-size: 30rpx;
+    background-color:transparent;
+    text-align:center;
+  }
+  button::after{
+    border:none !important;
+  }
+  button{
+    line-height:  1;
+    display: inline-block;
+  }
+  .classdetail{
+        width : 100% ;
+        height : 100% ;
+        display: inline-block;
+        image{
+            width : 100%;
+        }
+    }
+</style>
+<template>
+  <view class="container">
+    <image class="class-picture" src="{{mockImg}}" mode="aspectFill"></image>
+    <text class="class-ploy"></text>
+    <view class="tab-box">
+      <!-- 课程列表以及介绍的tab切换 -->
+      <tab @currentTab.user="getCurrentTab" :currentTab.sync="currentTab" :tabList.sync="tabList"> </tab>
+      <!-- 底部为切换之后具体的内容展示 -->
+      <scroll-view scroll-y="true" class="swiper-item-box" >
+        <!--课程详情 -->
+         <block wx:if="{{currentTab==0}}">
+          <view class="classdetail" >
+              <view wx:for="{{arrList}}" wx:key="item">
+                  <image src="{{item}}"  mode="widthFix"></image>
+              </view>
+          </view>
+        </block>
+        <!-- 课程列表 -->
+          <block wx:if="{{currentTab==1}}">
+            <view class="classList-content" wx:if="{{!alreadyBuy}}">
+                <view class="classList-title">每邀请 6 位好友一起听课， 可免费解锁 1 节课</view>
+            </view>
+            <view class="classList-main" wx:for="{{singles}}" wx:for-item="item" wx:for-index="index" wx:key="singles">
+                <navigator class="item_content" url="/pages/course?id={{item.id}}" wx:if="{{alreadyBuy || index < freeCount}}">
+                    <view class="main-item">
+                        <view class="item-left">
+                            <image src="{{imgSrc}}" data-type="{{item.type}}" class="item-img"></image>
+                            <text class="item-left-name">{{item.name}}</text>
+                        </view>
+                        <!-- <text class="lock-status lock-no">试读</text> -->
+                    </view>
+                </navigator>
+                <block wx:else>
+                   <view class="main-item main-item-nobuy" >
+                      <view class="item-left">
+                          <image src="{{imgSrc}}"  data-type="{{item.type}}" class="item-img" ></image>
+                          <text class="item-left-name">{{item.name}}</text>
+                      </view>
+                      </view>
+                    <view class="main-item-filter" ></view>
+                </block>
+            </view>
+        </block>
+      </scroll-view>
+    </view>
+    <view class="detail-bottom">
+      <view class="bottom-box">
+        <view class="sy-bottom btn_buy" @tap="pay">购买专栏：¥ {{price}}</view>
+        <view class="sy-bottom btn_invite" >
+            <button class="btn_real" open-type="share">邀请好友</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import Toast from 'wepy-com-toast'
+  import api from '../api/api.js';
+  import testMixin from '../mixins/test'
+  // 下半部为引用的组件
+  import Tab from '../components/tab'
+  import classList from '../components/classList'
+  import { 
+   USER_SPECICAL_INFO ,
+   USER_INFO
+} from '../untils/contant'
+  import {
+    getsetcourse ,
+    getOrder
+  } from "../api/apilist"
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '课程详情',
+      navigationBarBackgroundColor: '#ffd845'
+    }
+    components = {
+	  tab: Tab ,
+	  classList : classList
+    }
+
+    mixins = [testMixin]
+
+    data = {
+      price:'',
+      mockImg: "",
+      tabList: ["课程介绍", "课程列表"],
+      currentTab: 1,
+      is_empty: false ,
+      arrList  : '' ,
+      singles : [		  
+          
+      ],
+      alreadyBuy : false ,
+      productType : 1  ,
+      imgSrc : '' ,
+      freeCount : 0 
+    }
+
+    computed = {
+
+    }
+
+    methods = {
+      getCurrentTab(cur, evt) {
+        let that = this;
+        that.currentTab = cur;
+        that.$apply();
+      },
+      /**
+       * 滑动切换tab
+       */
+      bindChange(e) {
+        let that = this;
+		    that.currentTab = e.detail.current;
+        that.$apply();
+      },
+      onShareAppMessage: function () {
+        // if (res.from === 'button') {
+        //     // 来自页面内转发按钮
+        //     console.log(res.target)
+        // }
+        return {
+          title: '学习宝免费课程试听',
+          path: '/pages/index',
+        //   success: function (res) {
+        //     // 转发成功
+        //   },
+        //   fail: function (res) {
+        //     // 转发失败
+        //   }
+        }
+      },
+      pay(){
+        // 读取支付所需要的参数
+        var that = this ; 
+        console.log("###" + that.courseId)
+        let tokenId =  wepy.getStorageSync(USER_SPECICAL_INFO) ;
+        getOrder({
+          query: {
+            token : tokenId ,
+            id : that.courseId
+          },
+          id : that.courseId
+        }).then(resp => {
+           var rlt = resp.data;
+           //存储token
+           
+            that.$apply()
+        });
+        wx.requestPayment({
+          'timeStamp': '',
+          'nonceStr': '',
+          'package': '',
+          'signType': 'MD5',
+          'paySign': '',
+          'success':function(res){
+            //支付成功
+          },
+          'fail':function(res){
+            //支付失败 或 取消支付
+          }
+        })
+      }
+    }
+
+    imgSrcFn () {
+        return '../images/audio.png'
+    }
+    count () {
+      console.log(111)
+    }
+    splitIMg (string) {
+            // 创建空数组将原接口中的img抽离出来
+            let _thius = this 
+            let imgReg = /<img.*?(?:>|\/>)/gi ;
+            let srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i ;
+            var arr = string.match(imgReg) ;
+            var imgList = [] ;
+            for (let i = 0; i < arr.length; i++) {
+                var src = arr[i].match(srcReg);
+                //获取图片地址
+                imgList.push(src[1]) ;
+                // console.log(imgList)
+            }
+            _thius.arrList = imgList
+            _thius.$apply()
+        }
+    getSetcourse (courseId) {
+        var that = this ; 
+        let tokenId =  wepy.getStorageSync(USER_SPECICAL_INFO) ;
+        getsetcourse({
+          query: {
+            token : tokenId ,
+            id : courseId
+          },
+          id : courseId
+        }).then(resp => {
+           var rlt = resp.data;
+           //存储token
+            that.detail = rlt.result.tryContent ;
+            that.splitIMg(rlt.result.tryContent);
+            that.singles = rlt.result.singles ;
+
+            //存储free课程的下标,如果index < 该下标说明是免费的
+            that.freeCount = rlt.result.freeCount ;
+            that.mockImg = rlt.result.cover ;
+            that.alreadyBuy = rlt.result.alreadyBuy ;
+            that.price = rlt.result.price ;
+            that.courseId = courseId ;
+            that.productType = rlt.result.type ;
+            that.getIconType( rlt.result.type)
+            that.$apply()
+        });
+    }
+
+    getIconType  (val)  {
+      // let val = this.productType ;
+      console.log(val)
+      let that = this 
+      switch (val) {
+        case 2:
+          return that.imgSrc = '../images/audio.png'
+        case 3:
+          return that.imgSrc = '../images/video.png';
+        case 1:
+          return that.imgSrc = '../images/text.png' ;
+        default:
+          return that.imgSrc = '../images/audio.png'
+      that.$apply()
+      }
+   }
+
+   freeFn () {
+     console.log('计算是否是')
+   }
+  
+    events = {
+
+    }
+
+    onLoad(opt) {
+        console.log(opt)
+        // 销毁从下一个单品页面点击返回按钮时候的音频实例
+        this.getSetcourse(opt.courseId)
+    }
+  }
+
+</script>

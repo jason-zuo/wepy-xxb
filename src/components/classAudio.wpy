@@ -1,0 +1,241 @@
+<style lang="less">
+    .classAudio{
+        width : 100% ;
+        .audio-container{
+          width : 100% ;
+          height : 416rpx;
+        }
+       
+    }
+     .audio-controls{
+          width : 100%;
+          height : 199rpx;
+          background-color : #fff ;
+          overflow : hidden ;
+          
+        }
+    .audio-create-paper{
+        position:fixed;
+        z-index:999;
+        right:0;
+        top:35rpx;
+        width:116rpx;
+        height:38rpx;
+        line-height:38rpx;
+        font-size:23rpx;
+        font-family:"PingFAngSC-Regular";
+        color:#231815;
+        text-align:center;
+        background-color:#ffcb00;
+        border:1px solid #dddddd;
+        border-radius : 9rpx;
+        
+    }
+     .audio-cover{
+        width : 100% ;
+        height : 416rpx;
+      }
+      .audio-slider{
+            margin:0 auto ;
+            display: flex ;
+            justify-content: center;
+            align-items: center;
+            .audio-slider-main{
+                width : 467rpx;
+            }
+      }
+      .audioTime{
+          font-family:"SimHei";
+          font-size : 18rpx;
+          color:#444444;
+      }
+      .audio-play-status{
+          width : 376rpx;
+          display: flex ;
+          margin:0 auto ;
+          justify-content: space-between ;
+          align-items:center;
+          .left-audio , .right-audio{
+              width : 62rpx;
+              height : 62rpx;
+              align-items: center;
+          }
+           .left-audio image , .right-audio image{
+              width : 62rpx;
+              height : 62rpx;
+          }
+          .play-audio image{
+              width : 92rpx;
+              height : 92rpx;
+          }
+
+      }
+</style>
+
+
+<template>
+  <!--index.wxml-->
+  <view class="classAudio">
+    <view class="audio-container">
+      <image class="audio-cover" src="http://fs.91xuexibao.com/educhain/course/13/cover.png"></image>
+      <!-- <audio src="{{src}}" autoplay bindplay="{{playHeadle}}" bindpause="{{pauseHandle}}" id="myaudio"></audio> -->
+      <text class="audio-create-paper" bindtap="createPaper">生成海报</text>
+    </view>
+
+    <view class="audio-controls">
+        <view class="audio-slider">
+            <text class="audioTime">{{currentTime}}</text>
+            <slider class="audio-slider-main" bindchange="sliderChange" bindchanging="sliderChange" block-size="12" max="{{sliderMax}}" value="{{sliderCurrent}}" backgroundColor="#444444" activeColor="#ffd944" block-color="#ffd944"></slider>
+            <text class="audioTime">{{duration}}</text>
+        </view>
+        <view class="audio-play-status">
+            <view class="left-audio">
+                <image src="../images/pre.png"></image>
+            </view>
+            <view class="play-audio" @tap="playaudio">
+                 <image src="{{playImg}}"></image>
+            </view>
+            <view class="right-audio">
+                 <image src="../images/next.png"></image>
+            </view>
+        </view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import until from '../untils/untils'
+
+export default class classAudio extends wepy.component {
+  props = {
+      src : {
+         default : 'http://fs.xuexibao.cn/educhain/course/11/single/1/1.mp3'
+      }
+  }
+
+  data = {
+    // 音频播放状态， 1 为未播放显示 三角 ， 2 为正在播放显示两个条按钮
+      playstatus : 1  ,
+      playImg : '../images/audioplay.png' ,
+      endTime : '00:00' ,
+      startTime : '00:00' ,
+      duration : '00:00' ,
+      currentTime : '00:00' ,
+      sliderMax : null ,
+      sliderCurrent : null
+  }
+
+  methods = {
+        sliderChange (e) {
+             console.log(e)
+            //   移动滑块改变进度条
+            console.log(e.detail.value)
+            let nowStep = e.detail.value
+            // 获取新的current Time 并且赋值给媒体 
+            // 思路之初是将新的slider的value赋值给currentTime 但是 报错说没有setter只有getter
+            const position = e.detail.value ;
+            this.seekCurrentAUdio(position)
+        },
+
+        playaudio () {
+             if (this.playstatus == 1) { 
+                this.audioContext.play()
+            }else if (this.playstatus == 2) {
+                this.audioContext.pause()
+            }
+        },
+        createPaper(){
+            wx.navigateTo({
+                url: '../pages/imgSave'
+            });
+        }
+  }
+
+    seekCurrentAUdio (position) {
+        let _this = this ;
+        console.log("进入seek事件")
+        _this.audioContext.seek(position)
+
+    }
+
+    playHeadle () {
+        console.log(111)
+        this.playstatus = 2
+        this.$apply()
+    }
+
+    pauseHandle () {
+        console.log(222)
+        this.playstatus = 1
+        this.$apply()
+    }
+
+    playImgChange () {
+        let that = this ;
+        console.log(that.playstatus)
+        if (that.playstatus == 1) { 
+            that.playImg = '../images/audioplay.png'
+        }else if (that.playstatus == 2) {
+            that.playImg = '../images/audio-stop.png'
+        }
+        that.$apply() ;
+    }
+
+    pauseAudio () {
+        let _this = this
+             console.log( this.audioContext) ;
+         this.audioContext.destroy (() => {
+            
+        })
+    }
+
+    creatAudio (audioSrc) {
+        const innerAudioContext = wx.createInnerAudioContext() ;
+        let _this = this;
+        innerAudioContext.autoplay = true ;
+        innerAudioContext.src =  audioSrc ;
+        _this.audioContext = innerAudioContext ;
+        innerAudioContext.onPlay (() => {
+            _this.playHeadle()
+            _this.playImgChange()
+            console.log("开始播放") ;
+            _this.$apply()
+        }) 
+        
+        innerAudioContext.onPause (() => {
+            _this.pauseHandle()
+            _this.playImgChange()
+            console.log("暂停播放") ;
+        })
+
+        innerAudioContext.onTimeUpdate (() => {
+            // 由于没有双向数据绑定所以页面没法实时绘制时间信息
+            _this.currentTime = until.getCountDownTime(innerAudioContext.currentTime) ;
+            _this.duration =  until.getCountDownTime(innerAudioContext.duration)
+            _this.sliderCurrent = innerAudioContext.currentTime;
+            _this.sliderMax =  innerAudioContext.duration
+            _this.$apply()
+        })  
+
+        innerAudioContext.onError ((res) => {
+            console.log(res.errMsg) ;
+            console.log(res.errCode) ;
+        })
+        _this.$apply()
+   }
+
+  onLoad() {
+    let that = this;
+    that.creatAudio(that.src)
+
+  }
+  onUnload () {
+      console.log("组件卸载")
+      this.pauseHandle() 
+  }
+  watch = {   
+  }
+}
+
+</script>
+
